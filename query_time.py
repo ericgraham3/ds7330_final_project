@@ -65,14 +65,14 @@ if __name__ == "__main__":
 
         # print one set of results, uncomment below if you want to see actual query results
 
-        if results:
-            print("\nResults:")
-            # Print table header
-            print("".join(["{:<20}".format(col) for col in cursor.column_names]))
-            print("-" * 100)
-            # Iterate through results and print each row
-            for row in results:
-                print("".join(["{:<20}".format(str(col)) for col in row]))
+        # if results:
+        #     print("\nResults:")
+        #     # Print table header
+        #     print("".join(["{:<20}".format(col) for col in cursor.column_names]))
+        #     print("-" * 100)
+        #     # Iterate through results and print each row
+        #     for row in results:
+        #         print("".join(["{:<20}".format(str(col)) for col in row]))
 
     except mysql.connector.Error as e:  # catch SQL errors
         print("SQL Error: {0}".format(e.msg))
