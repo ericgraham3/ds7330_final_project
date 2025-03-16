@@ -8,7 +8,7 @@ The json_to_csv script takes a JSONL file and creates a CSV with the exact same 
 
 The csv_to_mysql.py script takes two csv files and inserts the data into MySQL tables **with the exact same name as the csv file.** 
 
-So if I name my database tables "Appliances" and "meta-appliances", the import script won't work. I need to name my tables "appliances" and "meta_appliances". This is a shortcoming of manually directly the database tables in SQL.
+So if I name my database tables "Appliances" and "meta-appliances", the import script won't work. I need to name my tables "appliances" and "meta_appliances". This is a shortcoming of directly creating the database tables in SQL.
 
 #### A Python solution could streamline this in the future, I just haven't gotten to it yet.
 
