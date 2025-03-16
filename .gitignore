@@ -1,0 +1,21 @@
+# pycharm project files
+/.venv/
+/.idea/
+
+# benchmarks and testing directories
+/.benchmarks/
+/.pytest_cache/
+
+# python cache
+/__pycache__/
+
+# project data files
+/data/
+*.csv
+
+# file containing database credentials, see db_config_example.py for structure
+db_config.py
+
+# old scripts that I don't want to delete yet
+electronics.py
+query_pytest_benchmark.py
