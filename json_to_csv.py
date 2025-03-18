@@ -19,5 +19,5 @@ def convert_json_to_csv(jsonl_path):
     return csv_name
 
 # test:
-# convert_to_jsonl('data/meta_Subscription_Boxes.jsonl')
-# convert_to_jsonl('data/Subscription_Boxes.jsonl')
+# convert_json_to_csv('meta_Subscription_Boxes.jsonl')
+# convert_json_to_csv('Subscription_Boxes.jsonl')
