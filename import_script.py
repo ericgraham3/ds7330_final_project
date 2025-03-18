@@ -18,10 +18,10 @@ conn = mysql.connector.connect(
 )
 
 # path/reference to the JSONL file for metadata
-meta_jsonl_path = 'data/meta_Amazon_Fashion.jsonl'
+meta_jsonl_path = 'meta_Subscription_Boxes.jsonl'
 
 # path/reference to JSONL file for review data
-review_jsonl_path = 'data/Amazon_Fashion.jsonl'
+review_jsonl_path = 'Subscription_Boxes.jsonl'
 
 # convert JSONL files to CSV
 meta_csv_path = json_converter.convert_jsonl_to_csv(meta_jsonl_path)
