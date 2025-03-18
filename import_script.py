@@ -15,7 +15,7 @@ conn = mysql.connector.connect(
     allow_local_infile=True
 )
 
-# path/references to the JSONL file for metadata
+# path/reference to the JSONL file for metadata
 meta_jsonl_path = 'meta_Subscription_Boxes.jsonl'
 
 # path/reference to JSONL file for review data
@@ -28,7 +28,7 @@ print("JSONL converted to CSV, processing import to MySQL...")
 
 # import csv pair to mysql
 importer = csv_importer.CSVImporter(conn)
-importer.process_csv_pair("meta_subscription_boxes.csv", "subscription_boxes.csv")
+importer.process_csv_pair(meta_csv_path, review_csv_path)
 
 # close connection
 conn.close()

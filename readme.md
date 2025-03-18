@@ -1,16 +1,12 @@
-## Database & Table Setup
+## Database Setup
 
-Run **create_database_and_tables.sql** in MySQL Workbench to set up your subscription box database and tables. The JSONL files are supposed to share the same structure (see notes below), so we should be able to just rename the tables to match the category. Mind the names of the foreign keys, those need to be changed as well!
+You need to create a database on your mysql server and enable LOCAL INFILE. I have added a SQL script called "create_database" to do this. 
 
-### IMPORTANT: Table Names 
+If you want to make the database yourself you can enable LOCAL INFILE with the following SQL statement:
 
-The json_to_csv script takes a JSONL file and creates a CSV with the exact same name **in lowercase**. So "meta_Appliances.jsonl" becomes "meta_appliances.csv".
+SET GLOBAL local_infile = 'ON';
 
-The csv_to_mysql.py script takes two csv files and inserts the data into MySQL tables **with the exact same name as the csv file.** 
-
-So if I name my database tables "Appliances" and "meta-appliances", the import script won't work. I need to name my tables "appliances" and "meta_appliances". This is a shortcoming of directly creating the database tables in SQL.
-
-#### A Python solution could streamline this in the future, I just haven't gotten to it yet.
+I think you have to do this again if you stop or restart your MySQL server, there is a way to set it to always start with this option enabled but I haven't tried it yet.
 
 ## Database Connection
 
@@ -18,14 +14,7 @@ I used the db_config.py file to store my database connection information. You ca
 
 ## Data Import
 
-- **csv_to_mysql.py** imports two CSV files (one for main data, one for metadata) per category.
-- Update file paths in **import_script.py** (default set for subscription box data) and run the script.
-
-### Handling Unexpected Columns
-
-When the "bought together" column includes a book, that item has extra key:value pairs for subtitle and author. I set the script to drop these until we know more about which product categories we'll be using, and whether they have these (or any other) unexpected columns. 
-
-At that point, we'll know whether any unexpected columns exist in the categories we're using, and we can create them manually or update the import script to create them automatically.
+Update file paths in **import_script.py** (default set for subscription box data) and run the script. It will convert the JSONL files to CSV format, then import them to the database. It will create the tables and set up the forein key relationship between the pair of tables.
 
 ## Query Timing
 
@@ -34,5 +23,8 @@ Modify the query in **query_time.py** and run that script (default: average rati
 ## Roadmap
 
 - Develop CSV-to-PostgreSQL import and query testing scripts
-- Automate table creation from CSV filenames and column names
 - Refactor code for better modularity
+
+### Completed
+
+- Automate table creation from CSV filenames and column names

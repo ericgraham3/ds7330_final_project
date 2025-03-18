@@ -1,7 +1,7 @@
 import os
 import mysql.connector
 import pandas as pd
-from csv_table import CSVTable  # Assuming CSVTable is in csv_table.py
+from csv_table import CSVTable
 
 # this class coordinates the import of a pair of CSV files, one for reviews and one for metadata, it takes a connection
 # to instantiate the "CSVImporter" object, then we pass two CSV files to the process_csv_pair function and call
