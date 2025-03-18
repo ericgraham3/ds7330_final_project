@@ -17,7 +17,7 @@ class CSVImporter:
 
     def _add_primary_key(self, csv_table, key_column="parent_asin"):
         """
-        makes parent_asin a primary key, this is why we de-duplicate
+        makes parent_asin a primary key, this is one reason we do all that pre-processing on the json and csv
         """
         cursor = self.connection.cursor()
         try:
@@ -33,7 +33,7 @@ class CSVImporter:
     def _create_foreign_key_relationship(self, parent_csv, child_csv, key_column="parent_asin", on_delete="CASCADE",
                                          on_update="CASCADE"):
         """
-        creates a foreign key relationship on parent_asin
+        creates a foreign key relationship on parent_asin, this is another reason we do all that pre-processing on the json and csv
         """
         constraint_name = f"fk_{child_csv.table_name}_{key_column}"
         alter_sql = f"""
@@ -62,15 +62,34 @@ class CSVImporter:
           1. deduplicates the parent CSV data to avoid issues with duplicate parent_asin values
           2. creates tables based on the CSV filenames and structure
           3. bulk loads CSV data into the corresponding tables using mysql's internal bulk import tool
-          4. adds a primary key to the product metadata table
+          4. adds a primary key to the product metadata table, here it is hardcoded to parent_asin
           5. creates a foreign key relationship between the product metadta and review tables
         """
         # deduplicate metadata's CSV data: sometimes there are duplicate parent_asin, and that prevents us from
         # creating the foreign key relationship between metadata and review data
-        print("Deduplicating parent CSV data...")
-        metadata_df = pd.read_csv(metadata_csv_path)
+
+        print("Preprocessing parent CSV data to remove duplicate and null values from parent_asin...")
+
+        # read csv and force parent_asin to be a string
+        metadata_df = pd.read_csv(metadata_csv_path, dtype={key_column: str})
+
+        # strip whitespace from parent_asin
+        metadata_df[key_column] = metadata_df[key_column].str.strip()
+
+        # replace empty strings and literal "NULL"/"null" with NaN
+        metadata_df[key_column] = metadata_df[key_column].replace({"": pd.NA, "NULL": pd.NA, "null": pd.NA})
+
+        # debug prints to check cleaning results
+        print("Null count in parent_asin after cleaning:", metadata_df[key_column].isna().sum())
+        print("Unique parent_asin values:", metadata_df[key_column].unique())
+
+        # Drop duplicates and rows where parent_asin is null
         metadata_df = metadata_df.drop_duplicates(subset=[key_column])
+        metadata_df = metadata_df.dropna(subset=[key_column])
+
         dedup_metadata_csv_path = f"dedup_{os.path.basename(metadata_csv_path)}"
+
+        # Save the deduplicated DataFrame to a new CSV file
         metadata_df.to_csv(dedup_metadata_csv_path, index=False)
 
         # create CSVTable objects using deduplicated CSV file for the metadata

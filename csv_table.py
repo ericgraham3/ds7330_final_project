@@ -54,7 +54,7 @@ class CSVTable:
         try:
             cursor.execute(create_table_sql)
             connection.commit()
-            print(f"Table '{self.table_name}' created successfully.")
+            print(f"Table '{self.table_name}' created successfully, no data has been loaded into the table.")
         except mysql.connector.Error as err:
             print(f"Error creating table '{self.table_name}': {err}")
         finally:
