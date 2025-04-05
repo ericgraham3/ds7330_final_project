@@ -13,8 +13,10 @@
 /data/
 *.csv
 
-# file containing database credentials, see db_config_example.py for structure
+# files containing database credentials, see db_config_example.py for structure
 db_config.py
+pg_db_config.py
+mongo_db_config.py
 
 # old scripts that I don't want to delete yet
 electronics.py

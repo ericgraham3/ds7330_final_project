@@ -1,15 +1,16 @@
 from __future__ import print_function  # make print a function
-import mysql.connector  # mysql functionality
+import psycopg2  # mysql functionality
 import sys  # for misc errors
 import time  # for timing the query execution
 
-import db_config  # storing my db password locally
+import pg_db_config  # storing my db password locally
 
 # connection, you can either set up a db_config file or replace here with your own values
-SERVER = db_config.host
-USERNAME = db_config.user
-PASSWORD = db_config.password
-DATABASE = db_config.database
+SERVER = pg_db_config.host
+PORT = pg_db_config.port
+USERNAME = pg_db_config.user
+PASSWORD = pg_db_config.password
+DATABASE = pg_db_config.database
 
 # test query to list average ratings of all subscription boxes, replace this with your own query against whatever tables you have
 QUERY = """
@@ -17,7 +18,7 @@ SELECT
     sb.parent_asin,
     msb.title,
     msb.main_category,
-    ROUND(AVG(sb.rating), 2) AS average_rating
+    ROUND(AVG(sb.rating)::numeric, 2) AS average_rating
 FROM subscription_boxes AS sb
 JOIN meta_subscription_boxes AS msb
     ON sb.parent_asin = msb.parent_asin
@@ -30,13 +31,14 @@ GROUP BY
 if __name__ == "__main__":
     con = None
     cursor = None
-    num_runs = num_runs = int(sys.argv[1]) if len(sys.argv) > 1 else 80 # how many times test will run default is 80
+    num_runs = int(sys.argv[1]) if len(sys.argv) > 1 else 80 # how many times test will run default is 80
     execution_times = []
 
     try:
         # Initialize db connection
-        con = mysql.connector.connect(
+        con = psycopg2.connect(
             host=SERVER,
+            port=PORT,
             user=USERNAME,
             password=PASSWORD,
             database=DATABASE
@@ -76,7 +78,7 @@ if __name__ == "__main__":
         #     for row in results:
         #         print("".join(["{:<20}".format(str(col)) for col in row]))
 
-    except mysql.connector.Error as e:  # catch SQL errors
+    except psycopg2.Error as e:  # catch SQL errors
         print("SQL Error: {0}".format(e.msg))
     except Exception as ex:  # anything else
         print("Unexpected error: {0}".format(sys.exc_info()[0]))
