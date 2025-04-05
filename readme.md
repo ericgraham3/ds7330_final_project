@@ -21,7 +21,10 @@ You do not need to make a server on it as the **combined_import_script.py** shou
 
 ## Database Connection
 
-I used the db_config.py file to store my database connection information. You can either manually enter your database credentials into the relevant scripts, or you can create your own db_config.py file (see the db_config_example.py file that is in the repo).
+I used the db_config.py file to store my database connection information. You can either manually enter your database credentials into the relevant scripts, or you can create your own db_config.py file (see the db_config_example.py file that is in the repo).  
+- MySQL: db_config.py
+- PostgreSQL: pg_db_config.py
+- MongoDB: mongo_db_config.py
 
 ## Data Import
 
