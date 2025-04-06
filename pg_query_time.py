@@ -2,6 +2,8 @@ from __future__ import print_function  # make print a function
 import psycopg2  # mysql functionality
 import sys  # for misc errors
 import time  # for timing the query execution
+import pandas as pd
+import subprocess
 
 import pg_db_config  # storing my db password locally
 
@@ -67,6 +69,15 @@ if __name__ == "__main__":
         avg_time = sum(execution_times) / len(execution_times)
         print("\nAverage execution time over {0} runs: {1:.4f} seconds".format(num_runs, avg_time))
 
+        # make dataframe of all times
+        df = pd.DataFrame({
+            'run': range(1, len(execution_times) + 1),
+            'execution times': execution_times
+        })
+
+        # export dataframe as csv
+        df.to_csv("pg_execution_times.csv", index=False)
+
         # print one set of results, uncomment below if you want to see actual query results
 
         # if results:
@@ -90,3 +101,4 @@ if __name__ == "__main__":
             con.close()
 
         print("\nConnection terminated.", end='')
+        subprocess.run(["python", "comparison_plots.py"])

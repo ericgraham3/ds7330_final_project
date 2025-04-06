@@ -13,6 +13,10 @@
 /data/
 *.csv
 
+# img files
+/img/
+*.png
+
 # files containing database credentials, see db_config_example.py for structure
 db_config.py
 pg_db_config.py

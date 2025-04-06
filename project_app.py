@@ -4,6 +4,7 @@ import threading
 import tkinter as tk
 import sys
 import io
+from PIL import Image
 
 def run_import_script():
     def stream_output():
@@ -137,6 +138,25 @@ def check_all_checked():
     else:
         import_button.configure(state="disabled")
 
+# Function to update the image when selection changes
+def update_image(selection):
+    image_paths = {
+        "Compare all": "averages_comparison.png",
+        "MySQL": "mysql_execution_plot.png",
+        "PostgreSQL": "pg_execution_plot.png",
+        "MongoDB": "mongo_execution_plot.png"
+    }
+
+    try:
+        image = CTkImage(
+            light_image=Image.open(image_paths[selection]),
+            size=(800, 500)  # adjust this size to your actual images
+        )
+        image_label.configure(image=image, text="")
+        image_label.image = image  # Keep reference
+    except FileNotFoundError:
+        image_label.configure(image=None, text=f"Image not found for '{selection}'")
+
 # Redirect print to CTkTextbox
 class TextRedirector:
     def __init__(self, textbox):
@@ -260,6 +280,24 @@ m_output_textbox.pack(pady=20, fill="both", expand=True)
 m_run_button = CTkButton(tabview.tab("MongoDB"), text="Run mongo_query_time.py", command=run_mongo_query_time_script)
 m_run_button.pack(pady=10)
 
+# Comparisons
+
+comparisons_frame = CTkFrame(tabview.tab("Comparisons"))
+comparisons_frame.pack(expand=True, fill="both", padx=20, pady=20)
+
+options = ["Compare all", "MySQL", "PostgreSQL", "MongoDB"]
+
+# Image label placeholder
+image_label = CTkLabel(comparisons_frame, text="")
+image_label.grid(row=0, column=1, padx=20, pady=20, sticky="e")
+
+# Dropdown menu
+dropdown = CTkOptionMenu(comparisons_frame, values=options, command=update_image)
+dropdown.set("Compare all")
+dropdown.grid(row=0, column=0, padx=20, pady=20, sticky="nw")
+
+# Load default image
+update_image("Compare all")
 
 # runs the app
 app.mainloop()
