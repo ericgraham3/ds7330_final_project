@@ -52,12 +52,37 @@ pipeline = [
     }
 ]
 
+pipeline_nojoin = [
+    {
+        "$group": {
+            "_id": {
+                "parent_asin": "$parent_asin",
+                "title": "$title"
+            },
+            "average_rating": { "$avg": "$rating" }
+        }
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "parent_asin": "$_id.parent_asin",
+            "title": "$_id.title",
+            "average_rating": { "$round": ["$average_rating", 2] }
+        }
+    },
+    {
+        "$sort": { "average_rating": -1 }  # optional: sort by highest-rated
+    }
+]
+
+
 if __name__ == "__main__":
     client = None
     db = None
     collection = None
     num_runs = num_runs = int(sys.argv[1]) if len(sys.argv) > 1 else 5 # how many times test will run default is 80
     execution_times = []
+    execution_times_nojoin = []
 
     try:
         # Initialize db connection
@@ -66,7 +91,11 @@ if __name__ == "__main__":
         collection = db["subscription_boxes"]
         print("Connection established.")
 
+        print("Pipeline with join:")
         print(pipeline)
+
+        print("Pipeline without join")
+        print(pipeline_nojoin)
 
         # run query multiple times (see num_runs above) and store execution time
         for run in range(num_runs):
@@ -79,8 +108,24 @@ if __name__ == "__main__":
             execution_times.append(elapsed_time)
             print("Run {0}: Query executed in {1:.4f} seconds".format(run + 1, elapsed_time))
 
+
         # average execution time
         avg_time = sum(execution_times) / len(execution_times)
+        print("\nAverage execution time over {0} runs: {1:.4f} seconds".format(num_runs, avg_time))
+
+        # run query multiple times (see num_runs above) and store execution time
+        for run in range(num_runs):
+            start_time = time.perf_counter()
+            results = collection.aggregate(pipeline_nojoin)
+            # Fetch the results to ensure the query is fully executed
+            end_time = time.perf_counter()
+
+            elapsed_time = end_time - start_time
+            execution_times_nojoin.append(elapsed_time)
+            print("Run {0}: Query executed in {1:.4f} seconds".format(run + 1, elapsed_time))
+
+        # average execution time
+        avg_time = sum(execution_times_nojoin) / len(execution_times_nojoin)
         print("\nAverage execution time over {0} runs: {1:.4f} seconds".format(num_runs, avg_time))
 
         # make dataframe of all times
@@ -91,6 +136,14 @@ if __name__ == "__main__":
 
         # export dataframe as csv
         df.to_csv("mongo_execution_times.csv", index=False)
+
+        df = pd.DataFrame({
+            'run': range(1, len(execution_times_nojoin) + 1),
+            'execution times': execution_times_nojoin
+        })
+
+        # export dataframe as csv
+        df.to_csv("mongo_execution_times_nojoin.csv", index=False)
 
         # print one set of results, uncomment below if you want to see actual query results
 

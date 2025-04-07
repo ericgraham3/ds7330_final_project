@@ -144,7 +144,8 @@ def update_image(selection):
         "Compare all": "averages_comparison.png",
         "MySQL": "mysql_execution_plot.png",
         "PostgreSQL": "pg_execution_plot.png",
-        "MongoDB": "mongo_execution_plot.png"
+        "MongoDB": "mongo_execution_plot.png",
+        "MongoDB-NoJoin": "mongo_execution_nj_plot.png"
     }
 
     try:
@@ -285,7 +286,7 @@ m_run_button.pack(pady=10)
 comparisons_frame = CTkFrame(tabview.tab("Comparisons"))
 comparisons_frame.pack(expand=True, fill="both", padx=20, pady=20)
 
-options = ["Compare all", "MySQL", "PostgreSQL", "MongoDB"]
+options = ["Compare all", "MySQL", "PostgreSQL", "MongoDB", "MongoDB-NoJoin"]
 
 # Image label placeholder
 image_label = CTkLabel(comparisons_frame, text="")

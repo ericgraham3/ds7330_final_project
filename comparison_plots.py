@@ -19,9 +19,14 @@ try:
     mongo_avg = mongo_times['execution times'].mean()
 except:
     print("No MongoDB Execution Time file. Please run a set of iterations in MongoDB tab")
+try:
+    mongo_times_nj = pd.read_csv("mongo_execution_times_nojoin.csv")
+    mongo_avg_nj = mongo_times_nj['execution times'].mean()
+except:
+    print("No MongoDB Execution Time file. Please run a set of iterations in MongoDB tab")
 
 try:
-    averages = [mysql_avg, pg_avg, mongo_avg]
+    averages = [mysql_avg, pg_avg, mongo_avg, mongo_avg_nj]
 except:
     print("Don't have all averages yet. Please run each database tab at least once")
 
@@ -60,12 +65,12 @@ def plot_execution_times(df, dbtype, filename="execution_plot.png"):
 def plot_side_by_side_averages(avgs, labels=None, filename="averages_comparison.png"):
     try:
         if labels is None:
-            labels = ['Database 1', 'Database 2', 'Database 3']
+            labels = ['Database 1', 'Database 2', 'Database 3', 'Database 4']
 
         x = np.arange(len(avgs))
 
         plt.figure(figsize=(6,5))
-        bars = plt.bar(x, avgs, color=['skyblue', 'salmon', 'lightgreen'])
+        bars = plt.bar(x, avgs, color=['skyblue', 'salmon', 'lightgreen', 'green'])
 
         # Add value labels above bars
         for i, bar in enumerate(bars):
@@ -98,8 +103,13 @@ try:
 except:
     print("No MongoDB Execution Time file. Please run a set of iterations in MongoDB tab")
 
+try:
+    plot_execution_times(mongo_times_nj, "MongoDB-NoJoin", "mongo_execution_nj_plot.png")
+except:
+    print("No MongoDB-NJ Execution Time file. Please run a set of iterations in MongoDB-NJ tab")
+
 # barplot to compare them side-by-side
 try:
-    plot_side_by_side_averages(averages, ['MySQL', 'PostgreSQL', 'MongoDB'])
+    plot_side_by_side_averages(averages, ['MySQL', 'PostgreSQL', 'MongoDB', 'MongoDB-NoJoin'])
 except:
     print("Don't have all averages yet. Please run each database tab at least once")
